@@ -2,8 +2,6 @@ const axios = require('axios');
 
 const router = require('express').Router();
 
-const restricted = require('../auth/authenticate-middleware');
-
 
 router.get('/', (req, res) => {
   const requestOptions = {
