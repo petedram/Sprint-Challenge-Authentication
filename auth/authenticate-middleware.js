@@ -3,6 +3,36 @@
   before granting access to the next middleware/route handler
 */
 
+const jwt = require('jsonwebtoken');
+const secrets = require('../config/secrets.js')
+
 module.exports = (req, res, next) => {
-  res.status(401).json({ you: 'shall not pass!' });
-};
+    try {
+        let token = req.headers.authorization
+
+        if (token) {
+            token = req.headers.authorization.split(" ")[1];
+            jwt.verify(token, secrets.jwtSecret, (err, decodedToken) => {
+              if (err) {
+                res.status(401).json({ you: "can't touch this" });
+              } else {
+                req.decodedJwt = decodedToken;
+                console.log(req.decodedJwt);
+                next();
+              }
+            })
+          } else {
+            throw new Error('shall not pass!');
+          }
+        } catch (err) {
+          res.status(401).json({ error: err.message });
+        }
+
+    };
+
+
+// module.exports = (req, res, next) => {
+//   res.status(401).json({ you: 'shall not pass!' });
+// };
+
+
